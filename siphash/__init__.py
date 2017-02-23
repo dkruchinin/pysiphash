@@ -108,6 +108,11 @@ class SipHash_2_4(object):
     >>> SipHash_2_4(b'FEDCBA9876543210').update(b'').update(b'a').hash()
     6581475155582014123
 
+    >> SipHash_2_4.fromkeyparts(506097522914230528, 1084818905618843912).hash()
+    8246050544436514353
+    >> SipHash_2_4.fromkeyparts(506097522914230528, 1084818905618843912, b'a').hash()
+    3144613055062689994
+
     >>> a = SipHash_2_4(b'FEDCBA9876543210').update(b'a')
     >>> a.hash()
     6581475155582014123
@@ -132,6 +137,17 @@ class SipHash_2_4(object):
                   0x6c7967656e657261 ^ k0,
                   0x7465646279746573 ^ k1)
         self.update(s)
+
+    @classmethod
+    def fromkeyparts(cls, k0, k1, s=b''):
+        """
+        Create a SipHash instance using two 64-bit integers as first (k0)
+        and second (k1) parts of the resultant 128-bit key.
+
+        >> SipHash_2_4.fromkeyparts(506097522914230528, 1084818905618843912).hash()
+        8246050544436514353
+        """
+        return cls(_twoQ.pack(k0, k1), s=s)
 
     def update(self, s):
         s = self.s + s
